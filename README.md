@@ -17,7 +17,7 @@ Chef 0.10.0 or higher required (for Chef environment use).
 
 #### packages
 - `application` - [Opscode application cookbook](https://github.com/opscode-cookbooks/application)
-- `play2` - [play2 cookbook](https://github.com/njin-fr/play2-cookbook)
+- `play2` - [play2 cookbook](https://github.com/njin-fr/play2)
 
 Attributes
 ----------
