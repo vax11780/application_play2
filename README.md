@@ -71,7 +71,7 @@ Attributes
     <td><tt>app_opts</tt></td>
     <td>String</td>
     <td>Additional java options</td>
-    <td><tt>nil</tt></td>
+    <td><tt>Empty string</tt></td>
   </tr>
 
 </table>
