@@ -62,7 +62,7 @@ end
 action :before_migrate do
 	unless new_resource.strategy == :dist_remote_file
 	 	bash "compilation-#{new_resource.application.name}" do
-			cwd new_resource.release_path
+			cwd ::File.join(new_resource.release_path, new_resource.app_dir)
 			code "play clean stage > compilation.log"
 			environment new_resource.environment
 		end	
@@ -100,7 +100,7 @@ def create_initd
     	mode "0755"
 		variables({
 			:name => new_resource.application.name,
-			:path => new_resource.application.path+"/current",
+			:path => ::File.join(new_resource.application.path, "current", new_resource.app_dir),
 			:options => opts+new_resource.app_opts,
 			:command => new_resource.strategy != :dist_remote_file ? "target/start" : "start"
 		})
