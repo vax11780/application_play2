@@ -37,20 +37,6 @@ action :before_deploy do
 		end
 	end
 
-	if new_resource.log_file
-		cookbook_file "#{new_resource.shared_path}/logger.xml" do
-			source new_resource.log_file
-			mode 00644
-		end
-	end
-
-	if new_resource.application_conf
-		cookbook_file "#{new_resource.shared_path}/application.conf" do
-			source new_resource.application_conf
-			mode 00644
-		end
-	end
-
 	unless new_resource.restart_command
 		new_resource.restart_command do
 			run_context.resource_collection.find(:service => new_resource.application.name).run_action(:restart)
@@ -78,18 +64,18 @@ end
 
 def create_initd
 
-	opts = ""
+	opts = []
 	if new_resource.http_port
-		opts += "-Dhttp.port=#{new_resource.http_port} "
+		opts << "-Dhttp.port=#{new_resource.http_port}"
 	end
 	if new_resource.https_port
-		opts += "-Dhttps.port=#{new_resource.https_port} "
+		opts << "-Dhttps.port=#{new_resource.https_port}"
 	end
 	if new_resource.application_conf
-		opts += "-Dconfig.file=#{new_resource.shared_path}/application.conf "	
+		opts << "-Dconfig.file=#{new_resource.application_conf}"
 	end
 	if new_resource.log_file
-		opts += "-Dlogger.file=#{new_resource.shared_path}/logger.xml "	
+		opts << "-Dlogger.file=#{new_resource.log_file}"	
 	end
 
 	template "/etc/init.d/#{new_resource.application.name}" do
@@ -101,7 +87,7 @@ def create_initd
 		variables({
 			:name => new_resource.application.name,
 			:path => ::File.join(new_resource.application.path, "current", new_resource.app_dir),
-			:options => opts+new_resource.app_opts,
+			:options => opts.join(" ") + " " + new_resource.app_opts,
 			:command => new_resource.strategy != :dist_remote_file ? "target/start" : "start"
 		})
 	end
